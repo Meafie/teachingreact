@@ -1,4 +1,4 @@
-// import {Component} from 'react';
+import {Component} from 'react';
 import AppInfo from '../app-info/app-info';
 import SearchPanel from '../search-panel/search-panel';
 import AppFilter from '../app-filter/app-filter';
@@ -44,38 +44,68 @@ import './app.css';
 //     }
 // }
 
-function App() {
-    const data = [
-        {
-            name: 'Pavel Trockiy',
-            salary: 800, 
-            id: 1,
-        },
-        {
-            name: 'Romanov Ivan',
-            salary: 3000,
-            id: 2,
-        },
-        {
-            name: 'Leonid Konevsky',
-            salary: 5000,
-            id: 3,
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [
+                {
+                    name: 'Pavel Trockiy',
+                    salary: 800, 
+                    id: 1,
+                },
+                {
+                    name: 'Romanov Ivan',
+                    salary: 3000,
+                    id: 2,
+                },
+                {
+                    name: 'Leonid Konevsky',
+                    salary: 5000,
+                    id: 3,
+                }
+            ]
         }
-    ];
-    return (
-        <div className="app">
-            <AppInfo/>
-            <div className="search-panel">
-                <SearchPanel/>
-                <AppFilter/>
+        this.maxId = 4;
+    }
+    deleteItem = (id) => {
+        this.setState(({data}) => {
+            return {
+                data: data.filter(item => item.id !== id),
+            }
+        })
+    }
+    addItem = (name, salary) => {
+        const newItem = {
+            name: name,
+            salary: salary,
+            increase: false,
+            id: this.maxId++,
+        };
+        this.setState(({data}) => {
+            const newArr = [...data, newItem];
+            return {
+                data: newArr,
+            }
+        })
+    }
+    render() {
+        const {data} = this.state;
+        return (
+            <div className="app">
+                <AppInfo/>
+                <div className="search-panel">
+                    <SearchPanel/>
+                    <AppFilter/>
+                </div>
+                <EmployeesList 
+                    data={data}
+                    onDelete={this.deleteItem}/>
+                <EmployeesAddForm
+                    onAdd={this.addItem} />
             </div>
-            <EmployeesList data={data}/>
-            <EmployeesAddForm/>
-        </div>
-        // <div className='App'>
-        //     <WhoAmI name ='Ivan' surname='Romanov' salary='800' link='vk.com'/>
-        // </div>
-    );
+        );
+    }
 }
 
 export default App;
